@@ -1,4 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+using NetworkingPlatform.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("AppConnectionString")));
+
 
 // Add services to the container.
 
