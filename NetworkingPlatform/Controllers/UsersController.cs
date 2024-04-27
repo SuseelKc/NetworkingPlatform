@@ -40,6 +40,25 @@ namespace NetworkingPlatform.Controllers
             return "User Added Sucessfully!";
         }
 
+        [HttpDelete]
+        [Route("DeleteUser")]
+        public string DeleteUser(int id)
+        {
 
+            Users User = _context.Users.Where(x => x.ID == id).FirstOrDefault();
+            if (User != null)
+            {
+                _context.Users.Remove(User);
+                _context.SaveChanges();
+                return "User Deleted";
+
+            }
+            else
+            {
+                return "No User Found";
+            }
+
+
+        }
     }
 }
