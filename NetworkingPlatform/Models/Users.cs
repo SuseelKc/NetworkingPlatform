@@ -2,9 +2,7 @@
 
 namespace NetworkingPlatform.Models
 {
-    public class Users
-    {
-
+   
         public enum UserRole
         {
             Bloggers = 0,
@@ -24,5 +22,5 @@ namespace NetworkingPlatform.Models
 
         }
 
-    }
+    
 }
