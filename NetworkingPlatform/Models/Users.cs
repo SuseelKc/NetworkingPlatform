@@ -1,24 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace NetworkingPlatform.Models
 {
    
-        public enum UserRole
-        {
-            Bloggers = 0,
-            Admin = 1
-            // Add more roles if needed
-        }
 
-        public class Users
+        public class Users:IdentityUser
         {
-            [Key]
-            public int ID { get; set; }
-            public string Name { get; set; }
-            public string ContactNo { get; set; }
-            public string Email { get; set; }
-            public string Password { get; set; }
-            public UserRole userRole { get; set; }
+            //[Key]
+            //public int ID { get; set; }
+            //public string Name { get; set; }
+            //public string ContactNo { get; set; }
+            //public string Email { get; set; }
+            //public string Password { get; set; }
+            //public UserRole userRole { get; set; }
 
         }
 
