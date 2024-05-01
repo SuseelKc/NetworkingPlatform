@@ -23,13 +23,13 @@ namespace NetworkingPlatform.Migrations
                         column: x => x.users_id,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction); // Specify ON DELETE NO ACTION
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Downvotes_Posts_post_id",
                         column: x => x.post_id,
                         principalTable: "Posts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction); // Specify ON DELETE NO ACTION
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
