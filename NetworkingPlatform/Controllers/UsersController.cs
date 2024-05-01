@@ -9,56 +9,56 @@ namespace NetworkingPlatform.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        //private readonly AppDbContext _context;
 
-        public UsersController(AppDbContext context)
-        {
-            _context = context;
-        }
+        //public UsersController(AppDbContext context)
+        //{
+        //    _context = context;
+        //}
 
-        [HttpGet]
-        [Route("GetUsers")]
-        public List<Users> GetUsers()
-        {
+        //[HttpGet]
+        //[Route("GetUsers")]
+        //public List<Users> GetUsers()
+        //{
 
-            return _context.Users.ToList();
-        }
+        //    return _context.Users.ToList();
+        //}
 
-        [HttpGet]
-        [Route("GetUser")]
-        public Users GetUser(int id)
-        {
+        //[HttpGet]
+        //[Route("GetUser")]
+        //public Users GetUser(int id)
+        //{
 
-            return _context.Users.Where(x=>x.ID==id).FirstOrDefault();
-        }
+        //    return _context.Users.Where(x=>x.ID==id).FirstOrDefault();
+        //}
 
-        [HttpPost]
-        [Route("AddUser")]
-        public string AddUser(Users User) {
-            _context.Users.Add(User);
-            _context.SaveChanges();
-            return "User Added Sucessfully!";
-        }
+        //[HttpPost]
+        //[Route("AddUser")]
+        //public string AddUser(Users User) {
+        //    _context.Users.Add(User);
+        //    _context.SaveChanges();
+        //    return "User Added Sucessfully!";
+        //}
 
-        [HttpDelete]
-        [Route("DeleteUser")]
-        public string DeleteUser(int id)
-        {
+        //[HttpDelete]
+        //[Route("DeleteUser")]
+        //public string DeleteUser(int id)
+        //{
 
-            Users User = _context.Users.Where(x => x.ID == id).FirstOrDefault();
-            if (User != null)
-            {
-                _context.Users.Remove(User);
-                _context.SaveChanges();
-                return "User Deleted";
+        //    Users User = _context.Users.Where(x => x.ID == id).FirstOrDefault();
+        //    if (User != null)
+        //    {
+        //        _context.Users.Remove(User);
+        //        _context.SaveChanges();
+        //        return "User Deleted";
 
-            }
-            else
-            {
-                return "No User Found";
-            }
+        //    }
+        //    else
+        //    {
+        //        return "No User Found";
+        //    }
 
 
-        }
+        //}
     }
 }

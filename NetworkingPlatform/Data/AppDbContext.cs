@@ -1,15 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using NetworkingPlatform.Models;
 
 namespace NetworkingPlatform.Data
 {
-    public class AppDbContext:DbContext
+    public class AppDbContext : IdentityDbContext<Users>
     {
-        public AppDbContext(DbContextOptions options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
 
         }
         public DbSet<Users> Users { get; set; }
+        public DbSet<Posts> Posts { get; set; }
     }
 }
