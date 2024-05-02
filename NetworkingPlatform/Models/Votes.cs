@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using NetworkingPlatform.Enums;
 
 namespace NetworkingPlatform.Models
 {
-    public class Upvotes
+    public class Votes
     {
         [Key]
         public int Id { get; set; }
@@ -11,5 +12,8 @@ namespace NetworkingPlatform.Models
         public int post_id { get; set; }
         [ForeignKey("AspNetUsers")]
         public string users_id { get; set; }
+
+        //create votetype enums
+        public VoteType voteType { get; set; }
     }
 }

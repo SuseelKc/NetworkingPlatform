@@ -155,26 +155,6 @@ namespace NetworkingPlatform.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("NetworkingPlatform.Models.Downvotes", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("post_id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("users_id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Downvotes");
-                });
-
             modelBuilder.Entity("NetworkingPlatform.Models.Posts", b =>
                 {
                     b.Property<int>("ID")
@@ -205,26 +185,6 @@ namespace NetworkingPlatform.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("NetworkingPlatform.Models.Upvotes", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("post_id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("users_id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Upvotes");
                 });
 
             modelBuilder.Entity("NetworkingPlatform.Models.Users", b =>

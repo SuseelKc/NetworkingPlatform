@@ -13,7 +13,6 @@ namespace NetworkingPlatform.Data
         }
         public DbSet<Users> Users { get; set; }
         public DbSet<Posts> Posts { get; set; }
-        public DbSet<Upvotes> Upvotes { get; set; }
-        public DbSet<Downvotes> Downvotes { get; set; }
+        public DbSet<Votes> Votes { get; set; }
     }
 }

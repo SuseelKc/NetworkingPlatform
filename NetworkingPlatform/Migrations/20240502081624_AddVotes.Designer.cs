@@ -12,8 +12,8 @@ using NetworkingPlatform.Data;
 namespace NetworkingPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240501050505_AddDownvotes")]
-    partial class AddDownvotes
+    [Migration("20240502081624_AddVotes")]
+    partial class AddVotes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -188,26 +188,6 @@ namespace NetworkingPlatform.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("NetworkingPlatform.Models.Upvotes", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("post_id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("users_id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Upvotes");
                 });
 
             modelBuilder.Entity("NetworkingPlatform.Models.Users", b =>
