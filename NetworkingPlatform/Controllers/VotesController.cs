@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace NetworkingPlatform.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class VotesController : ControllerBase
     {
@@ -20,115 +20,136 @@ namespace NetworkingPlatform.Controllers
         }
 
         [HttpPost]
-        [Route("UpvotePost/{postId}")]
+        [Route("like/{postId}")]
         public async Task<IActionResult> addUpvote(int postId, [FromBody] Votes vote)
         {
-            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-
-            if (userId == null)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == vote.users_id);
+            if (user == null)
             {
-                return Unauthorized(); // User is not authenticated
+                return StatusCode(400, "Invalid user id");
             }
+           
 
             // Check if there's an existing upvote for the same post by the same user
             var existingVote = await _context.Votes
-                .FirstOrDefaultAsync(u => u.post_id == postId && u.users_id == userId);
+                .FirstOrDefaultAsync(u => u.post_id == postId && u.users_id == vote.users_id);
 
             if (existingVote != null)
             {
-                existingVote.voteType = 0; // Assuming 0 represents an upvote
+                existingVote.voteType = existingVote.voteType== 2 ? 1 : existingVote.voteType== 0 ? 1 : 2; // Assuming 2 represents neither like noe unlike
                 await _context.SaveChangesAsync();
-                return Ok("Upvote Post Successfully!");
+                return Ok("Success");
             }
 
             // Add the upvote
-            vote.voteType = 0; // Assuming 0 represents an upvote
-            vote.users_id = userId; // Set the user ID
-            vote.post_id = postId; // Set the post ID
+            vote.voteType = 1; // Assuming 1 represents an like
             _context.Votes.Add(vote);
             await _context.SaveChangesAsync();
-            return Ok("Upvote Post Successfully!");
+            return Ok("Post liked");
         }
 
 
 
         [HttpPost]
-        [Route("DownvotePost/{postId}")]
+        [Route("unlike/{postId}")]
         public async Task<IActionResult> addDownvote(int postId, [FromBody] Votes vote)
         {
-            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-
-            if (userId == null)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == vote.users_id);
+            if (user == null)
             {
-                return Unauthorized(); // User is not authenticated
+                return StatusCode(400, "Invalid user id");
             }
+           
 
             // Check if there's an existing upvote for the same post by the same user
             var existingVote = await _context.Votes
-                .FirstOrDefaultAsync(u => u.post_id == postId && u.users_id == userId);
+                .FirstOrDefaultAsync(u => u.post_id == postId && u.users_id == vote.users_id);
 
             if (existingVote != null)
             {
-                existingVote.voteType = (Enums.VoteType)1; // Assuming 0 represents an upvote
+                existingVote.voteType = existingVote.voteType == 2 ? 0 : existingVote.voteType==1 ? 0: 2; // Assuming 2 represents nothing
                 await _context.SaveChangesAsync();
                 return Ok("Downvote Post Successfully!");
             }
 
             // Add the upvote
-            vote.voteType = (Enums.VoteType)1; // Assuming 0 represents an upvote
-            vote.users_id = userId; // Set the user ID
-            vote.post_id = postId; // Set the post ID
+            vote.voteType = 0; // Assuming 0 represents an unlike
             _context.Votes.Add(vote);
             await _context.SaveChangesAsync();
             return Ok("Downvote Post Successfully!");
         }
 
-
-        [HttpDelete]
-        [Route("deleteUpVote")]
-        public string deleteUpVote(int id)
+        [HttpGet]
+        [Route("/likes/{postId}")]
+        public IActionResult getLikes(int postId)
         {
-
-            Votes vote = _context.Votes.FirstOrDefault(x => x.Id == id && x.voteType == VoteType.Upvote);
-
-            if (vote != null)
+            try
             {
-                _context.Votes.Remove(vote);
-                _context.SaveChanges();
-                return "Vote deleted Successfullly";
+                var post = _context.Posts.FirstOrDefault(p=>p.ID == postId);
+                if (post == null)
+                {
+                    return StatusCode(400, "No post found");
+                }
+                var likes = _context.Votes.Where(p=> p.post_id==postId).ToList();
 
+                return Ok(likes); // Return 200 OK with the list of posts
             }
-            else
+            catch (Exception ex)
             {
-                return "No Vote found";
+                // Log the exception for debugging purposes
+                // logger.LogError(ex, "An error occurred while retrieving posts.");
+
+                return StatusCode(500, "An error occurred while retrieving posts. Please try again later."); // Return 500 Internal Server Error
             }
-
-
         }
 
-        [HttpDelete]
-        [Route("deleteDownVote")]
-        public string deleteDownVote(int id)
-        {
+        //[HttpDelete]
+        //[Route("deleteUpVote")]
+        //public string deleteUpVote(int id)
+        //{
 
-            Votes vote = _context.Votes.FirstOrDefault(x => x.Id == id && x.voteType == VoteType.Downvote);
+        //    Votes vote = _context.Votes.FirstOrDefault(x => x.Id == id && x.voteType == VoteType.Upvote);
 
-            if (vote != null)
-            {
-                _context.Votes.Remove(vote);
-                _context.SaveChanges();
-                return "Vote deleted Successfullly";
+        //    if (vote != null)
+        //    {
+        //        _context.Votes.Remove(vote);
+        //        _context.SaveChanges();
+        //        return "Vote deleted Successfullly";
 
-            }
-            else
-            {
-                return "No Vote found";
-            }
+        //    }
+        //    else
+        //    {
+        //        return "No Vote found";
+        //    }
 
 
-        }
+        //}
+
+        //[HttpDelete]
+        //[Route("deleteDownVote")]
+        //public string deleteDownVote(int id)
+        //{
+
+        //    Votes vote = _context.Votes.FirstOrDefault(x => x.Id == id && x.voteType == VoteType.Downvote);
+
+        //    if (vote != null)
+        //    {
+        //        _context.Votes.Remove(vote);
+        //        _context.SaveChanges();
+        //        return "Vote deleted Successfullly";
+
+        //    }
+        //    else
+        //    {
+        //        return "No Vote found";
+        //    }
+
+
+        //}
 
 
 

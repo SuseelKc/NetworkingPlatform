@@ -14,6 +14,6 @@ namespace NetworkingPlatform.Models
         public string users_id { get; set; }
 
         //create votetype enums
-        public VoteType voteType { get; set; }
+        public int voteType { get; set; }
     }
 }
