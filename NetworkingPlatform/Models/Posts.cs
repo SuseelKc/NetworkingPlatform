@@ -11,7 +11,7 @@ namespace NetworkingPlatform.Models
         public string Title { get; set; }
         public string Image { get; set; }
         public string Description { get; set; }
-        public Category Category { get; set; }
+        public string? Category { get; set; }
 
         [ForeignKey("Users")]
         public string users_id { get; set; }

@@ -15,7 +15,7 @@ namespace NetworkingPlatform.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Category = table.Column<int>(type: "int", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     users_id = table.Column<string>(type: "nvarchar(450)", nullable: false) // Updated data type to match primary key of Users
                 },
                 constraints: table =>
