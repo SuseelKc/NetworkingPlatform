@@ -2,8 +2,8 @@
 {
     public enum Category
     {
-        Technology= 0,
-        Sports= 1,
-        Entertainment=2
+        Technology,
+        Sports,
+        Entertainment
     }
 }

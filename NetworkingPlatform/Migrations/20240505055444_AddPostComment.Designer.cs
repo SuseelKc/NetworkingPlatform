@@ -12,8 +12,8 @@ using NetworkingPlatform.Data;
 namespace NetworkingPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240503161414_Category2")]
-    partial class Category2
+    [Migration("20240505055444_AddPostComment")]
+    partial class AddPostComment
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,6 +158,31 @@ namespace NetworkingPlatform.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("NetworkingPlatform.Models.PostComments", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("post_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("users_id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("PostComments");
+                });
+
             modelBuilder.Entity("NetworkingPlatform.Models.Posts", b =>
                 {
                     b.Property<int>("ID")
@@ -167,7 +192,6 @@ namespace NetworkingPlatform.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Category")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")

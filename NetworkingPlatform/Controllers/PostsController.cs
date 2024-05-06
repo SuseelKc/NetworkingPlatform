@@ -23,15 +23,15 @@ namespace NetworkingPlatform.Controllers
 
         [HttpPost]
         [Route("post")]
-        public IActionResult AddPost(Posts Post)
+        public async Task<IActionResult> AddPost(Posts Post)
         {
             try
             {
-                //var user = _context.Users.FirstOrDefaultAsync(u=>u.Id==Post.users_id);
-                //if(user == null)
-                //{
-                //    return Unauthorized();
-                //}
+                var user =await _context.Users.FirstOrDefaultAsync(u=>u.Id==Post.users_id);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
                 _context.Posts.Add(Post);
                 _context.SaveChanges();
                 return Ok(Post);
@@ -139,7 +139,7 @@ namespace NetworkingPlatform.Controllers
         }
         [HttpGet]
         [Route("post/category/{category}")]
-        public IActionResult GetPostCategory(int category)
+        public IActionResult GetPostCategory(string category)
         {
             try
             {
