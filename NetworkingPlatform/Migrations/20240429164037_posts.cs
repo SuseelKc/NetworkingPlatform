@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace NetworkingPlatform.Migrations
 {
@@ -15,8 +16,9 @@ namespace NetworkingPlatform.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    users_id = table.Column<string>(type: "nvarchar(450)", nullable: false) // Updated data type to match primary key of Users
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: true), // Updated Date property to nullable
+                    users_id = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -24,8 +26,8 @@ namespace NetworkingPlatform.Migrations
                     table.ForeignKey(
                         name: "FK_Posts_Users_users_id",
                         column: x => x.users_id,
-                        principalTable: "AspNetUsers", // Changed to match the Users table name
-                        principalColumn: "Id", // Changed to match the primary key of Users table
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 

@@ -84,17 +84,17 @@ namespace NetworkingPlatform.Controllers
         }
 
         [HttpGet]
-        [Route("/likes/{postId}")]
-        public IActionResult getLikes(int postId)
+        [Route("likes/{postId}")]
+        public async Task<IActionResult> getLikes(int postId)
         {
             try
             {
-                var post = _context.Posts.FirstOrDefault(p=>p.ID == postId);
+                var post = await _context.Posts.FirstOrDefaultAsync(p=>p.ID == postId);
                 if (post == null)
                 {
                     return StatusCode(400, "No post found");
                 }
-                var likes = _context.Votes.Where(p=> p.post_id==postId).ToList();
+                var likes =await _context.Votes.Where(p=> p.post_id==postId).ToListAsync();
 
                 return Ok(likes); // Return 200 OK with the list of posts
             }

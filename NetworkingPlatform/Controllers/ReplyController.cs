@@ -7,27 +7,27 @@ namespace NetworkingPlatform.Controllers
 {
     [Route("api/")]
     [ApiController]
-    public class CommentController: ControllerBase
+    public class ReplyController: ControllerBase
     {
         private readonly AppDbContext _context;
-        public CommentController(AppDbContext context)
+        public ReplyController(AppDbContext context)
         {
             _context = context;
         }
         [HttpGet]
-        [Route("comment/{postId}")]
-        public async Task<IActionResult> GetComments(int postId)
+        [Route("reply/{commentId}")]
+        public async Task<IActionResult> GetReplies(int commentId)
         {
             try
             {
-                var post =await _context.Posts.FirstOrDefaultAsync(p=> p.ID == postId);
-                if(post == null)
+                var comment =await _context.PostComments.FirstOrDefaultAsync(p => p.ID == commentId);
+                if (comment == null)
                 {
                     return NotFound();
                 }
-                var comment = _context.PostComments.Where(c => c.post_id == postId).ToArray();
-               
-                return Ok(comment);
+                var reply =await _context.Reply.Where(c => c.comment_id == commentId).ToArrayAsync();
+
+                return Ok(reply);
 
             }
             catch (Exception ex)
@@ -38,62 +38,65 @@ namespace NetworkingPlatform.Controllers
         }
 
         [HttpPost]
-        [Route("comment/{postId}")]
-        public async Task<IActionResult> PostComment(int postId,[FromBody] PostComments c)
+        [Route("reply/{commentId}")]
+        public async Task<IActionResult> PostReply(int commentId, [FromBody] Reply c)
         {
             try
             {
-                var post = _context.Posts.FirstOrDefault(p => p.ID == postId);
-                if(post == null)
+                var comment =await _context.PostComments.FirstOrDefaultAsync(p => p.ID == commentId);
+                if (comment == null)
                 {
                     return NotFound();
                 }
-                _context.PostComments.Add(c);
+                _context.Reply.Add(c);
                 _context.SaveChanges();
                 return Ok(c);
 
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
         [HttpPatch]
-        [Route("comment/{id}")]
+        [Route("reply/{id}")]
         public async Task<IActionResult> EditComment(int id, [FromBody] string content)
         {
             try
             {
-                var comment = _context.PostComments.FirstOrDefault(c=>c.ID == id);
-                if(comment == null)
+                var reply = await _context.Reply.FirstOrDefaultAsync(c => c.ID == id);
+                if (reply == null)
                 {
                     return NotFound();
                 }
-                comment.Content = content;
+                reply.Content = content;
                 _context.SaveChanges();
-                return Ok(comment);
+                return Ok(reply);
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
 
         }
         [HttpDelete]
-        [Route("comment/{id}")]
+        [Route("reply/{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
             try
             {
-                var comment = _context.PostComments.FirstOrDefault(_ => _.ID == id);
-                if(comment == null)
+                var reply =await _context.Reply.FirstOrDefaultAsync(_ => _.ID == id);
+                if (reply == null)
                 {
                     return NotFound();
                 }
-                _context.PostComments.Remove(comment);
+                _context.Reply.Remove(reply);
                 _context.SaveChanges();
-                return Ok(comment);
+                return Ok(reply);
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
