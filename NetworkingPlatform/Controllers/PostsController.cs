@@ -45,7 +45,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpGet]
         [Route("posts")]
-        public IActionResult GetPosts()
+        public async Task<IActionResult> GetPosts()
         {
             try
             {
@@ -58,13 +58,14 @@ namespace NetworkingPlatform.Controllers
                 var postsWithUsers = new List<object>(); // Create a list to store posts along with user information
                 foreach (var post in posts)
                 {
-                    var user = _context.Users.Find(post.users_id); // Retrieve user information for the post
-
+                    var user =_context.Users.Find(post.users_id); // Retrieve user information for the post
+                    var likes =_context.Votes.Where(l=>l.post_id == post.ID).ToArray();
                     // Create an anonymous object containing post and user information
                     var postWithUser = new
                     {
                         Post = post,
-                        User = user
+                        User = user,
+                        Likes = likes,
                     };
 
                     postsWithUsers.Add(postWithUser); // Add post with user information to the list
@@ -82,23 +83,26 @@ namespace NetworkingPlatform.Controllers
 
         [HttpGet]
         [Route("post/{id}")]
-        public IActionResult GetPost(int id)
+        public async Task<IActionResult> GetPost(int id)
         {
             try
             {
-                Posts post = _context.Posts.Where(x => x.ID == id).FirstOrDefault();
+                var post = await _context.Posts.Where(x => x.ID == id).FirstOrDefaultAsync();
 
                 if (post == null)
                 {
                     return NotFound(); // Return 404 Not Found if no posts are found
                 }
-                var user = _context.Users.FirstOrDefault(u => u.Id == post.users_id);
-                var posts = new List<object>
+                var user =await _context.Users.FirstOrDefaultAsync(u => u.Id == post.users_id);
+                var likes = _context.Votes.Where(l=>l.post_id==post.ID).ToArray();
+                var finalpost = new List<object>();
+                var posts = new
                 {
-                    post,
-                    user
+                    Post = post,
+                    User = user,
+                    Likes = likes
                 };
-
+                finalpost.Add(posts);
                 return Ok(posts); // Return 200 OK with the list of posts
             }
             catch (Exception ex)
@@ -156,12 +160,12 @@ namespace NetworkingPlatform.Controllers
 
         [HttpDelete]
         [Route("post/{id}")]
-        public IActionResult deletePost(int id)
+        public async Task<IActionResult> deletePost(int id)
         {
             try
             {
 
-                Posts post = _context.Posts.Where(x => x.ID == id).FirstOrDefault();
+                var post =await _context.Posts.Where(x => x.ID == id).FirstOrDefaultAsync();
                 if (post != null)
                 {
                     _context.Posts.Remove(post);

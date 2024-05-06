@@ -1,36 +1,78 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NetworkingPlatform.Data;
 using NetworkingPlatform.Models;
 
 namespace NetworkingPlatform.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class UsersController : ControllerBase
     {
-        //private readonly AppDbContext _context;
+        private readonly AppDbContext _context;
 
-        //public UsersController(AppDbContext context)
-        //{
-        //    _context = context;
-        //}
+        public UsersController(AppDbContext context)
+        {
+            _context = context;
+        }
 
-        //[HttpGet]
-        //[Route("GetUsers")]
-        //public List<Users> GetUsers()
-        //{
+        [HttpGet]
+        [Route("users")]
+        public async Task<IActionResult> GetUsers()
+        {
+            try
+            {
+                var users = await _context.Users.ToListAsync();
 
-        //    return _context.Users.ToList();
-        //}
+                return Ok(users);
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //[HttpGet]
-        //[Route("GetUser")]
-        //public Users GetUser(int id)
-        //{
+        [HttpGet]
+        [Route("user/{id}")]
+        public async Task<IActionResult> GetUser(string id)
+        {
+            try
+            {
+               var user = await _context.Users.FirstAsync(u=>u.Id==id);
+                return Ok(user);
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    return _context.Users.Where(x=>x.ID==id).FirstOrDefault();
-        //}
+        [HttpGet]
+        [Route("user/posts/{id}")]
+        public async Task<IActionResult> getUserPosts(string id)
+        {
+            try
+            {
+                var posts = await _context.Posts
+                   .Where(p => p.users_id == id)
+                   .Select(post => new
+                   {
+                       post.ID,
+                       post.Title,
+                       post.Image,
+                       post.Description,
+                       post.Category,
+                       post.Date,
+                       post.users_id,
+                       LikeCount = _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 1), // Count of likes
+                       UnlikeCount = _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 0) // Count of unlikes
+                   })
+                   .ToListAsync();
+                return Ok(posts);
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         //[HttpPost]
         //[Route("AddUser")]

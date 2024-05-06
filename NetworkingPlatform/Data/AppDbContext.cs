@@ -15,5 +15,6 @@ namespace NetworkingPlatform.Data
         public DbSet<Posts> Posts { get; set; }
         public DbSet<Votes> Votes { get; set; }
         public DbSet<PostComments> PostComments { get; set; }
+        public DbSet<Reply> Reply { get; set; }
     }
 }

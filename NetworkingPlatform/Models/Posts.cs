@@ -13,6 +13,8 @@ namespace NetworkingPlatform.Models
         public string Description { get; set; }
         public string? Category { get; set; }
 
+        public DateTime? Date { get; set; }
+
         [ForeignKey("Users")]
         public string users_id { get; set; }
 
