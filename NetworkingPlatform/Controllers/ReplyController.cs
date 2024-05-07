@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NetworkingPlatform.Data;
+using NetworkingPlatform.Migrations;
 using NetworkingPlatform.Models;
 
 namespace NetworkingPlatform.Controllers
@@ -25,10 +26,18 @@ namespace NetworkingPlatform.Controllers
                 {
                     return NotFound();
                 }
-                var reply =await _context.Reply.Where(c => c.comment_id == commentId).ToArrayAsync();
-
+                var reply = _context.Reply.Where(c => c.comment_id == commentId).Select(com =>
+                 new
+                 {
+                     id = com.ID,
+                     content = com.Content,
+                     date = com.Date,
+                     author = _context.Users.FirstOrDefault(u => u.Id == com.users_id).UserName,
+                     avatar = "",
+                     users_id = com.users_id,
+                     comment_id= com.comment_id,
+                 });
                 return Ok(reply);
-
             }
             catch (Exception ex)
             {
@@ -43,7 +52,7 @@ namespace NetworkingPlatform.Controllers
         {
             try
             {
-                var comment =await _context.PostComments.FirstOrDefaultAsync(p => p.ID == commentId);
+                var comment =await _context.PostComments.FirstOrDefaultAsync(c => c.ID == commentId);
                 if (comment == null)
                 {
                     return NotFound();

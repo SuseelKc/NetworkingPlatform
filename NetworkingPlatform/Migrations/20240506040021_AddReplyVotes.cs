@@ -27,9 +27,9 @@ namespace NetworkingPlatform.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ReplyVotes_Replies_reply_id",
+                        name: "FK_ReplyVotes_Reply_reply_id",
                         column: x => x.reply_id,
-                        principalTable: "Replies",
+                        principalTable: "Reply",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });

@@ -107,6 +107,36 @@ namespace NetworkingPlatform.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("likes/{postId}/users")]
+        public async Task<IActionResult> getUsersList(int postId)
+        {
+            try
+            {
+                var post = await _context.Posts.FirstOrDefaultAsync(p => p.ID == postId);
+                if (post == null)
+                {
+                    return StatusCode(400, "No post found");
+                }
+                var likes = await _context.Votes.Where(p => p.post_id == postId).Select(n => new
+                {
+                    id = n.users_id,
+                    avater = "",
+                    author = _context.Users.FirstOrDefault(u => u.Id == n.users_id).UserName
+                }).ToListAsync();
+
+                return Ok(likes); // Return 200 OK with the list of posts
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging purposes
+                // logger.LogError(ex, "An error occurred while retrieving posts.");
+
+                return StatusCode(500, ex.Message); // Return 500 Internal Server Error
+            }
+        }
+
+
         //[HttpDelete]
         //[Route("deleteUpVote")]
         //public string deleteUpVote(int id)

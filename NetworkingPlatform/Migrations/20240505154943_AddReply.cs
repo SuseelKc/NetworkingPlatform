@@ -8,7 +8,7 @@ namespace NetworkingPlatform.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Replies",
+                name: "Reply",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -20,7 +20,7 @@ namespace NetworkingPlatform.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Replies", x => x.ID);
+                    table.PrimaryKey("PK_Reply", x => x.ID);
                     table.ForeignKey(
                         name: "FK_Replies_AspNetUsers_users_id",
                         column: x => x.users_id,
@@ -28,7 +28,7 @@ namespace NetworkingPlatform.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Replies_PostComments_comment_id",
+                        name: "FK_Reply_PostComments_comment_id",
                         column: x => x.comment_id,
                         principalTable: "PostComments",
                         principalColumn: "ID",
@@ -36,20 +36,20 @@ namespace NetworkingPlatform.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Replies_comment_id",
-                table: "Replies",
+                name: "IX_Reply_comment_id",
+                table: "Reply",
                 column: "comment_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Replies_users_id",
-                table: "Replies",
+                name: "IX_Reply_users_id",
+                table: "Reply",
                 column: "users_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Replies");
+                name: "Reply");
         }
     }
 }
