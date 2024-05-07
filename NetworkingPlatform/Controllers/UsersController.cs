@@ -23,7 +23,13 @@ namespace NetworkingPlatform.Controllers
         {
             try
             {
-                var users = await _context.Users.ToListAsync();
+                var users = await _context.Users.Select(u=> new
+                {
+                    id=u.Id,
+                    userName= u.UserName,
+                    email= u.Email,
+                    posts=_context.Posts.Where(p=>p.users_id==u.Id).Count(),
+                }).ToListAsync();
 
                 return Ok(users);
             }catch (Exception ex)
@@ -64,7 +70,8 @@ namespace NetworkingPlatform.Controllers
                        post.Date,
                        post.users_id,
                        LikeCount = _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 1), // Count of likes
-                       UnlikeCount = _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 0) // Count of unlikes
+                       UnlikeCount = _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 0), // Count of unlikes
+                       commentCount = _context.PostComments.Count(p=> p.post_id== post.ID)
                    })
                    .ToListAsync();
                 return Ok(posts);

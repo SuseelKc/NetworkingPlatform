@@ -52,7 +52,7 @@ namespace NetworkingPlatform.Controllers
                 var posts = _context.Posts.ToList();
                 if (posts == null || !posts.Any())
                 {
-                    return NotFound(); // Return 404 Not Found if no posts are found
+                    return Ok(posts); // Return 404 Not Found if no posts are found
                 }
 
                 var postsWithUsers = new List<object>(); // Create a list to store posts along with user information
