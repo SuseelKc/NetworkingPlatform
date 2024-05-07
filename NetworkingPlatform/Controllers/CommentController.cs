@@ -25,7 +25,17 @@ namespace NetworkingPlatform.Controllers
                 {
                     return NotFound();
                 }
-                var comment = _context.PostComments.Where(c => c.post_id == postId).ToArray();
+                var comment = _context.PostComments.Where(c => c.post_id == postId).Select(com =>
+                new
+                {
+                    id = com.ID,
+                    content = com.Content,
+                    date = com.Date,
+                    author = _context.Users.FirstOrDefault(u => u.Id == com.users_id).UserName,
+                    avatar = "",
+                    users_id = com.users_id
+                });
+              
                
                 return Ok(comment);
 
@@ -43,8 +53,9 @@ namespace NetworkingPlatform.Controllers
         {
             try
             {
-                var post = _context.Posts.FirstOrDefault(p => p.ID == postId);
-                if(post == null)
+                var post = await _context.Posts.FirstOrDefaultAsync(p=>p.ID == postId);
+
+                if (post == null)
                 {
                     return NotFound();
                 }
@@ -52,7 +63,8 @@ namespace NetworkingPlatform.Controllers
                 _context.SaveChanges();
                 return Ok(c);
 
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
