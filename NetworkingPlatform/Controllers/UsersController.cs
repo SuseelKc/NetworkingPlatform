@@ -72,16 +72,42 @@ namespace NetworkingPlatform.Controllers
         {
             try
             {
-                var users = await _context.Users.Select(u=> new
-                {
-                    id=u.Id,
-                    userName= u.UserName,
-                    email= u.Email,
-                    posts=_context.Posts.Where(p=>p.users_id==u.Id).Count(),
-                }).ToListAsync();
+                var users = await _context.Users.ToListAsync();
 
-                return Ok(users);
-            }catch (Exception ex)
+                var usersWithPopularity = new List<object>();
+
+                foreach (var user in users)
+                {
+                    var posts = await _context.Posts.Where(p => p.users_id == user.Id).ToListAsync();
+
+                    int popularityScore = 0;
+
+                    foreach (var post in posts)
+                    {
+                        // Calculate popularity score for each post and add to total popularity score
+                        popularityScore += (2*(_context.Votes.Count(v => v.post_id == post.ID && v.voteType == 1))) // Likes
+                                            + (-1*(_context.Votes.Count(v => v.post_id == post.ID && v.voteType == 0))) // Unlikes
+                                            + (1* (_context.PostComments.Count(c => c.post_id == post.ID))); // Comments
+                    }
+
+                    var userWithPopularity = new
+                    {
+                        id = user.Id,
+                        userName = user.UserName,
+                        email = user.Email,
+                        role = user.UserRole,
+                        posts = _context.Posts.Count(c=> c.users_id==user.Id),
+                        popularity = popularityScore
+                    };
+
+                    usersWithPopularity.Add(userWithPopularity);
+                }
+
+                // Order users by popularity score
+
+                return Ok(usersWithPopularity);
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

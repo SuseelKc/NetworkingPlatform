@@ -48,9 +48,10 @@ namespace NetworkingPlatform.Controllers
             // Include additional user data in the response object
                 var userData = new
                 {
-                    UserId = user.Id,
+                    id = user.Id,
                     UserName = user.UserName,
-                    Email = user.Email
+                    email = user.Email,
+                    role = user.UserRole
                     // Add other user properties as needed
                 };
 
