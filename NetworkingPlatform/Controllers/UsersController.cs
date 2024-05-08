@@ -123,6 +123,34 @@ namespace NetworkingPlatform.Controllers
             }
         }
 
+
+        // for log in 
+
+
+
+        //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         //[HttpPost]
         //[Route("AddUser")]
         //public string AddUser(Users User) {
