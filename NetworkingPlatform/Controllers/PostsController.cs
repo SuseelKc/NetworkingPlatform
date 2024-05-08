@@ -58,14 +58,19 @@ namespace NetworkingPlatform.Controllers
                 var postsWithUsers = new List<object>(); // Create a list to store posts along with user information
                 foreach (var post in posts)
                 {
-                    var user =_context.Users.Find(post.users_id); // Retrieve user information for the post
+                    var user =_context.Users.Find(post.users_id); 
                     var likes =_context.Votes.Where(l=>l.post_id == post.ID).ToArray();
-                    // Create an anonymous object containing post and user information
+                    var likeCount = _context.Votes.Count(l => l.post_id == post.ID && l.voteType == 1); // Count of likes
+                    var unlikeCount = _context.Votes.Count(l => l.post_id == post.ID && l.voteType == 0); // Count of unlikes
+                    var commentCount = _context.PostComments.Count(c => c.post_id == post.ID); // Count of comments
+                    var popularityScore = (2 * likeCount) + (-1 * unlikeCount) + (1 * commentCount); 
+
                     var postWithUser = new
                     {
                         Post = post,
                         User = user,
                         Likes = likes,
+                        popularity = popularityScore
                     };
 
                     postsWithUsers.Add(postWithUser); // Add post with user information to the list
@@ -147,8 +152,49 @@ namespace NetworkingPlatform.Controllers
         {
             try
             {
-                var post = _context.Posts.Where(p => p.Category.Equals(category)).ToList();
-                return StatusCode(200, post);
+                List<Posts> posts;
+                if (category == "Popular")
+                {
+                    posts = _context.Posts.OrderByDescending(p => _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 1) -
+                                      _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 0) +
+                                      _context.PostComments.Count(c => c.post_id == p.ID))
+               .ThenByDescending(p => p.Date)
+                 .ToList();
+                }else if(category == "New")
+                {
+                    posts = _context.Posts.OrderByDescending(p => _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 1) -
+                                     _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 0) +
+                                     _context.PostComments.Count(c => c.post_id == p.ID))
+              .ThenByDescending(p => p.Date)
+                .ToList();
+
+                }
+                else
+                {
+                    posts = _context.Posts
+               .Where(p => p.Category.Equals(category))
+               .OrderByDescending(p => _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 1) -
+                                      _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 0) +
+                                      _context.PostComments.Count(c => c.post_id == p.ID))
+               .ThenByDescending(p => p.Date)
+               .ToList();
+                }
+                var postsWithUsers = new List<object>(); // Create a list to store posts along with user information
+                foreach (var post in posts)
+                {
+                    var user = _context.Users.Find(post.users_id); // Retrieve user information for the post
+                    var likes = _context.Votes.Where(l => l.post_id == post.ID).ToArray();
+                    // Create an anonymous object containing post and user information
+                    var postWithUser = new
+                    {
+                        Post = post,
+                        User = user,
+                        Likes = likes,
+                    };
+
+                    postsWithUsers.Add(postWithUser); // Add post with user information to the list
+                }
+                return StatusCode(200, postsWithUsers);
 
             }
             catch (Exception ex)
@@ -186,6 +232,67 @@ namespace NetworkingPlatform.Controllers
 
 
         }
+
+        [HttpGet]
+        [Route("posts/only")]
+        public async Task<IActionResult> GetPostsOnly()
+        {
+            try
+            {
+                var posts = _context.Posts.ToList();
+                if (posts == null || !posts.Any())
+                {
+                    return Ok(posts); // Return 404 Not Found if no posts are found
+                }
+
+                return Ok(posts); // Return 200 OK with the list of posts
+
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "An error occurred while retrieving posts. Please try again later."); // Return 500 Internal Server Error
+            }
+        }
+
+        [HttpGet]
+        [Route("posts/admin")]
+        public async Task<IActionResult> getUserPosts()
+        {
+            try
+            {
+                var posts = await _context.Posts.Select(post => new
+                   {
+                       post.ID,
+                       post.Title,
+                       post.Image,
+                       post.Description,
+                       post.Category,
+                       post.Date,
+                       post.users_id,
+                       user = _context.Users.FirstOrDefault(u=> u.Id==post.users_id).UserName,
+                       LikeCount = _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 1), // Count of likes
+                       UnlikeCount = _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 0), // Count of unlikes
+                       commentCount = _context.PostComments.Count(p => p.post_id == post.ID),
+                       popularity = (2 * _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 1)) +
+                                  (-1 * _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 0)) +
+                                  (1 * _context.PostComments.Count(p => p.post_id == post.ID))
+                }).OrderByDescending(post => post.popularity)
+                   .ToListAsync();
+                return Ok(posts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+
+
+
+
 
 
     }
