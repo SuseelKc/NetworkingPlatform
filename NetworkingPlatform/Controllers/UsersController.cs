@@ -96,6 +96,7 @@ namespace NetworkingPlatform.Controllers
                         userName = user.UserName,
                         email = user.Email,
                         role = user.UserRole,
+                        image = user.Image,
                         posts = _context.Posts.Count(c=> c.users_id==user.Id),
                         popularity = popularityScore
                     };
