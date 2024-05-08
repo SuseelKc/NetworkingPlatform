@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NetworkingPlatform.Data;
 using NetworkingPlatform.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace NetworkingPlatform.Controllers
 {
@@ -16,6 +19,52 @@ namespace NetworkingPlatform.Controllers
         {
             _context = context;
         }
+
+        ///
+        [HttpPost]
+        [Route("RegisterUser")]
+        public async Task<IActionResult> RegisterUser(Users User)
+        {
+            try
+            {
+                // Validate email format
+                if (!IsValidEmail(User.Email))
+                {
+                    return BadRequest("Invalid email format.");
+                }
+                User.PasswordHash = HashPassword(User.PasswordHash);
+
+                User.NormalizedEmail = User.Email.ToUpper(); 
+                User.NormalizedUserName= User.Email.ToUpper();
+                _context.Users.Add(User);
+                _context.SaveChanges();
+                return Ok(User);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private string HashPassword(string password)
+        {
+            var passwordHasher = new PasswordHasher<Users>();
+            return passwordHasher.HashPassword(null, password);
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        ///
 
         [HttpGet]
         [Route("users")]
