@@ -198,11 +198,57 @@ namespace NetworkingPlatform.Controllers
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
                 return Ok("User deleted successfully");
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                return StatusCode(500,ex.Message);
+                return StatusCode(500, ex.Message);
             }
 
         }
+
+        //changepassword
+        [HttpPost]
+        [Route("user/changepassword/{id}")]
+        public async Task<IActionResult> ChangePassword(string id, [FromBody] ChangePassword model)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+                if (user == null)
+                {
+                    return NotFound("No user found");
+                }
+
+                // Assuming ChangePasswordModel contains properties OldPassword and NewPassword
+                if (!VerifyPassword(user, model.OldPassword))
+                {
+                    return BadRequest("Incorrect old password");
+                }
+
+                // Change password logic
+                user.PasswordHash = HashPassword(model.NewPassword);
+
+                await _context.SaveChangesAsync();
+
+                return Ok("User password changed successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        private bool VerifyPassword(Users user, string password)
+        {
+            // You need to implement your own logic for verifying passwords,
+            // for example, comparing hash of provided password with stored hash.
+            // This might involve using a library like ASP.NET Core Identity.
+            // For demonstration purposes, let's assume password verification logic here.
+            var passwordHasher = new PasswordHasher<Users>();
+            var result = passwordHasher.VerifyHashedPassword(null, user.PasswordHash, password);
+            return result == PasswordVerificationResult.Success;
+        }
+
     }
 }
