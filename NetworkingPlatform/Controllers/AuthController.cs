@@ -66,7 +66,7 @@ namespace NetworkingPlatform.Controllers
             return Ok(new { Token = token, User = userData });
         }
 
-        private string GenerateJwtToken(Users user)
+        private string GenerateJwtToken(Users user) //generate  JWT token
         {
             var key = Encoding.UTF8.GetBytes(_secretKey);
 
@@ -108,7 +108,7 @@ namespace NetworkingPlatform.Controllers
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = $"{Request.Scheme}://{Request.Host}/api/Auth/ResetPassword?email={email}&token={WebUtility.UrlEncode(token)}";
+            var callbackUrl = $"{Request.Scheme}://{Request.Host}/api/Auth/ResetPassword?email={email}&token={WebUtility.UrlEncode(token)}"; //url with token injected
 
             // Customize email subject and body as needed
             var subject = "Password Reset";

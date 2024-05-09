@@ -23,7 +23,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpPost]
         [Route("post")]
-        public async Task<IActionResult> AddPost(Posts Post)
+        public async Task<IActionResult> AddPost(Posts Post) //function that add post
         {
             try
             {
@@ -45,7 +45,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpGet]
         [Route("posts")]
-        public async Task<IActionResult> GetPosts()
+        public async Task<IActionResult> GetPosts() //get all the posts from the database
         {
             try
             {
@@ -142,7 +142,7 @@ namespace NetworkingPlatform.Controllers
            
             catch (Exception ex)
             {
-                // Handle other exceptions
+                // Handle  exceptions
                 return StatusCode(500, "An error occurred while updating the post. Please try again later.");
             }
         }
@@ -206,7 +206,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpDelete]
         [Route("post/{id}")]
-        public async Task<IActionResult> deletePost(int id)
+        public async Task<IActionResult> deletePost(int id)//delete the post given the post id
         {
             try
             {
@@ -236,7 +236,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpDelete]
         [Route("post/admin/{id}")]
-        public async Task<IActionResult> deletePostByAdmin(int id)
+        public async Task<IActionResult> deletePostByAdmin(int id)//function for admin to delete thet particular post given by id
         {
             try
             {
@@ -317,12 +317,6 @@ namespace NetworkingPlatform.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
-
-
-
-
 
 
 

@@ -17,11 +17,11 @@ namespace NetworkingPlatform.Controllers
         }
         [HttpGet]
         [Route("reply/{commentId}")]
-        public async Task<IActionResult> GetReplies(int commentId)
+        public async Task<IActionResult> GetReplies(int commentId) //retrive the comments by its given
         {
             try
             {
-                var comment =await _context.PostComments.FirstOrDefaultAsync(p => p.ID == commentId);
+                var comment =await _context.PostComments.FirstOrDefaultAsync(p => p.ID == commentId);// first find the post comment
                 if (comment == null)
                 {
                     return NotFound();
@@ -48,7 +48,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpPost]
         [Route("reply/{commentId}")]
-        public async Task<IActionResult> PostReply(int commentId, [FromBody] Reply c)
+        public async Task<IActionResult> PostReply(int commentId, [FromBody] Reply c) //add reply on comments funciton
         {
             try
             {
@@ -67,13 +67,14 @@ namespace NetworkingPlatform.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         [HttpPatch]
         [Route("reply/{id}")]
-        public async Task<IActionResult> EditComment(int id, [FromBody] string content)
+        public async Task<IActionResult> EditComment(int id, [FromBody] string content) //edit reply
         {
             try
             {
-                var reply = await _context.Reply.FirstOrDefaultAsync(c => c.ID == id);
+                var reply = await _context.Reply.FirstOrDefaultAsync(c => c.ID == id);// find the reply by its id
                 if (reply == null)
                 {
                     return NotFound();
@@ -91,7 +92,7 @@ namespace NetworkingPlatform.Controllers
         }
         [HttpDelete]
         [Route("reply/{id}")]
-        public async Task<IActionResult> DeleteComment(int id)
+        public async Task<IActionResult> DeleteComment(int id) //delete the comment given by its id
         {
             try
             {

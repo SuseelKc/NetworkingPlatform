@@ -46,7 +46,7 @@ namespace NetworkingPlatform.Controllers
             }
         }
 
-        private string HashPassword(string password)
+        private string HashPassword(string password)//fucntion that return the string password to hashed password
         {
             var passwordHasher = new PasswordHasher<Users>();
             return passwordHasher.HashPassword(null, password);
@@ -68,7 +68,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpGet]
         [Route("users")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers() //fucntion that get all users form the db
         {
             try
             {
@@ -116,7 +116,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpGet]
         [Route("user/{id}")]
-        public async Task<IActionResult> GetUser(string id)
+        public async Task<IActionResult> GetUser(string id) // get user buy its id
         {
             try
             {
@@ -131,7 +131,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpGet]
         [Route("user/posts/{id}")]
-        public async Task<IActionResult> getUserPosts(string id)
+        public async Task<IActionResult> getUserPosts(string id)//get all the post done by the user
         {
             try
             {
@@ -162,7 +162,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpPatch]
         [Route("user/{id}")]
-        public async Task<IActionResult> UpdateUser(string id, string type, string content)
+        public async Task<IActionResult> UpdateUser(string id, string type, string content) //function that update user
         {
             try
             {
@@ -186,7 +186,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpDelete]
         [Route("user/admin/{id}")]
-        public async Task<IActionResult> DeleteUserByAdmin(string id)
+        public async Task<IActionResult> DeleteUserByAdmin(string id) //delete user as admin
         {
             try
             {
@@ -209,7 +209,7 @@ namespace NetworkingPlatform.Controllers
         //changepassword
         [HttpPost]
         [Route("user/changepassword/{id}")]
-        public async Task<IActionResult> ChangePassword(string id, [FromBody] ChangePassword model)
+        public async Task<IActionResult> ChangePassword(string id, [FromBody] ChangePassword model) //chnage the password of the existing user
         {
             try
             {
@@ -225,7 +225,7 @@ namespace NetworkingPlatform.Controllers
                     return BadRequest("Incorrect old password");
                 }
 
-                // Change password logic
+                // hash the new password
                 user.PasswordHash = HashPassword(model.NewPassword);
 
                 await _context.SaveChangesAsync();
@@ -239,14 +239,11 @@ namespace NetworkingPlatform.Controllers
         }
 
 
-        private bool VerifyPassword(Users user, string password)
+        private bool VerifyPassword(Users user, string password) // function that checks the old password to new password
         {
-            // You need to implement your own logic for verifying passwords,
-            // for example, comparing hash of provided password with stored hash.
-            // This might involve using a library like ASP.NET Core Identity.
-            // For demonstration purposes, let's assume password verification logic here.
+            
             var passwordHasher = new PasswordHasher<Users>();
-            var result = passwordHasher.VerifyHashedPassword(null, user.PasswordHash, password);
+            var result = passwordHasher.VerifyHashedPassword(null, user.PasswordHash, password); //verify the password  the old password and new pasword 
             return result == PasswordVerificationResult.Success;
         }
 

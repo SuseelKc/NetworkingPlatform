@@ -17,7 +17,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpGet]
         [Route("dashboard/info")]
-        public async Task<IActionResult> getDashboardInfo()
+        public async Task<IActionResult> getDashboardInfo()  /// get the dashboard details such as counts and other metrics defiled below for admin
         {
             try
             {
