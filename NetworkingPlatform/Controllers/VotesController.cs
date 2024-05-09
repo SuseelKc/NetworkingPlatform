@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using NetworkingPlatform.Data;
 using NetworkingPlatform.Enums;
+using NetworkingPlatform.Hubs;
 using NetworkingPlatform.Models;
 using System.Security.Claims;
 
@@ -13,10 +15,12 @@ namespace NetworkingPlatform.Controllers
     public class VotesController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public VotesController(AppDbContext context)
+        public VotesController(AppDbContext context, IHubContext<NotificationHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         [HttpPost]
@@ -47,6 +51,8 @@ namespace NetworkingPlatform.Controllers
             vote.voteType = 1; // Assuming 1 represents an like
             _context.Votes.Add(vote);
             await _context.SaveChangesAsync();
+            //signal r notification
+            await _hubContext.Clients.User(vote.users_id).SendAsync("ReceiveNotification", "You received a new vote!");
             return Ok("Post liked");
         }
 
@@ -80,6 +86,8 @@ namespace NetworkingPlatform.Controllers
             vote.voteType = 0; // Assuming 0 represents an unlike
             _context.Votes.Add(vote);
             await _context.SaveChangesAsync();
+            //signal r notification
+            await _hubContext.Clients.User(vote.users_id).SendAsync("ReceiveNotification", "You received a DownVote!");
             return Ok("Downvote Post Successfully!");
         }
 
