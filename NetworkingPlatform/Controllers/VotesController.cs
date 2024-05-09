@@ -52,7 +52,8 @@ namespace NetworkingPlatform.Controllers
             _context.Votes.Add(vote);
             await _context.SaveChangesAsync();
             //signal r notification
-            await _hubContext.Clients.User(vote.users_id).SendAsync("ReceiveNotification", "You received a new vote!");
+            // await _hubContext.Clients.User(vote.users_id).SendAsync("ReceiveNotification", "You received a new vote!");
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Post liked");
             return Ok("Post liked");
         }
 

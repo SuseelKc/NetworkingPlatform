@@ -204,5 +204,26 @@ namespace NetworkingPlatform.Controllers
             }
 
         }
+
+        [HttpPatch]
+        [Route("changeprofile/{id}")]
+        public async Task<IActionResult> ChangeProfile(string id,[FromBody] string url)
+        {
+            try
+            {
+                var user = await _context.Users.FirstAsync(u => u.Id == id);
+                if (user == null)
+                {
+                    return NotFound("No user found");
+                }
+                user.Image = url;
+                await _context.SaveChangesAsync();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

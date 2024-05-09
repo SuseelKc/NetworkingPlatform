@@ -11,7 +11,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
                       policy =>
                       {
-                          policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                          policy.WithOrigins("http://localhost:5173").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
                       });
 });
 
@@ -41,8 +41,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.MapHub<NotificationHub>("/notificationHub");
 
+//app.MapHub<NotificationHub>("/notification");
+
+
+app.UseRouting();
 app.MapIdentityApi<Users>();
 app.UseHttpsRedirection();
 
@@ -50,5 +53,7 @@ app.UseAuthorization();
 app.UseCors();
 
 app.MapControllers();
+
+app.MapHub<NotificationHub>("/notification");
 
 app.Run();
