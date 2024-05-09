@@ -53,7 +53,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpGet]
         [Route("dashboard/posts/")]
-        public async Task<IActionResult> GetPosts(int year, int month)
+        public async Task<IActionResult> GetPosts(int year, int month)//get posts filter by dates
         {
             try
             {
