@@ -33,7 +33,7 @@ namespace NetworkingPlatform.Controllers
                      content = com.Content,
                      date = com.Date,
                      author = _context.Users.FirstOrDefault(u => u.Id == com.users_id).UserName,
-                     avatar = "",
+                     avatar = _context.Users.FirstOrDefault(u=> u.Id==com.users_id).Image,
                      users_id = com.users_id,
                      comment_id= com.comment_id,
                  });

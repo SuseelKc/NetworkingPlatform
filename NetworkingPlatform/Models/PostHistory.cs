@@ -1,15 +1,14 @@
-﻿using NetworkingPlatform.Enums;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NetworkingPlatform.Models
 {
-    public class Posts
+    public class PostHistory
     {
         [Key]
         public int ID { get; set; }
-        public string Title { get; set; }
-        public string Image { get; set; }
+        public string Old { get; set; }
+        public string New { get; set; }
         public string Description { get; set; }
         public string? Category { get; set; }
 
@@ -18,10 +17,6 @@ namespace NetworkingPlatform.Models
         [ForeignKey("Users")]
         public string users_id { get; set; }
 
-        public Boolean isDeleted { get; set; } = false;
-
-        // Add navigation property for the User
-        //public Users User { get; set; }
 
     }
 }
