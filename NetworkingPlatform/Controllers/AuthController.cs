@@ -112,7 +112,7 @@ namespace NetworkingPlatform.Controllers
 
             // Customize email subject and body as needed
             var subject = "Password Reset";
-            var body = $"Please reset your password by clicking <a href='{callbackUrl}'>here</a>.";
+            var body = $"Please reset your password by clicking <a href='{callbackUrl}'>here</a>. token = '{token}'";
 
             await _emailService.SendAsync(email, subject, body);
 
