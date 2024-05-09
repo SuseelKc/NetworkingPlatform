@@ -132,10 +132,29 @@ namespace NetworkingPlatform.Controllers
                 {
                     return NotFound("Post not found"); // Return 404 Not Found if the post doesn't exist
                 }
+                var postHistory = new PostHistory
+                {
+                    post_id = existingPost.ID,
+                    Title = existingPost.Title,
+                    Image = existingPost.Image,
+                    Description = existingPost.Description,
+                    Category = existingPost.Category,
+                    Date = existingPost.Date,
+                    users_id = existingPost.users_id,
+                    isDeleted = existingPost.isDeleted
+                };
 
+                _context.PostHistory.Add(postHistory);
                 // Update only specific properties of the post
-                _context.Entry(existingPost).CurrentValues.SetValues(post);
+                existingPost.Title = post.Title;
+                existingPost.Image = post.Image;
+                existingPost.Description = post.Description;
+                existingPost.Category = post.Category;
+                existingPost.Date = DateTime.Now;
+
                 _context.SaveChanges();
+                //_context.Entry(existingPost).CurrentValues.SetValues(post);
+                //_context.SaveChanges();
 
                 return Ok("Post updated successfully"); // Return 200 OK if the update is successful
             }
