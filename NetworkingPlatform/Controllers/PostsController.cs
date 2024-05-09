@@ -212,6 +212,7 @@ namespace NetworkingPlatform.Controllers
             {
 
                 var post = await _context.Posts.Where(x => x.ID == id).FirstOrDefaultAsync();
+
                 if (post != null)
                 {
                     _context.Posts.Remove(post);
