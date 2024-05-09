@@ -98,7 +98,7 @@ namespace NetworkingPlatform.Controllers
         //forgotpassword
         [HttpPost]
         [Route("ForgotPassword")]
-        public async Task<IActionResult> ForgotPassword(string email)
+        public async Task<IActionResult> ForgotPassword([FromBody] string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -108,7 +108,7 @@ namespace NetworkingPlatform.Controllers
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = $"{Request.Scheme}://{Request.Host}/api/Auth/ResetPassword?email={email}&token={WebUtility.UrlEncode(token)}";
+            var callbackUrl = $"http://localhost:5173/forget-password?type=new&email={email}&token={token}";
 
             // Customize email subject and body as needed
             var subject = "Password Reset";
