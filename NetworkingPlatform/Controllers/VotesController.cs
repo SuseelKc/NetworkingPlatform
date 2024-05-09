@@ -145,49 +145,7 @@ namespace NetworkingPlatform.Controllers
         }
 
 
-        //[HttpDelete]
-        //[Route("deleteUpVote")]
-        //public string deleteUpVote(int id)
-        //{
-
-        //    Votes vote = _context.Votes.FirstOrDefault(x => x.Id == id && x.voteType == VoteType.Upvote);
-
-        //    if (vote != null)
-        //    {
-        //        _context.Votes.Remove(vote);
-        //        _context.SaveChanges();
-        //        return "Vote deleted Successfullly";
-
-        //    }
-        //    else
-        //    {
-        //        return "No Vote found";
-        //    }
-
-
-        //}
-
-        //[HttpDelete]
-        //[Route("deleteDownVote")]
-        //public string deleteDownVote(int id)
-        //{
-
-        //    Votes vote = _context.Votes.FirstOrDefault(x => x.Id == id && x.voteType == VoteType.Downvote);
-
-        //    if (vote != null)
-        //    {
-        //        _context.Votes.Remove(vote);
-        //        _context.SaveChanges();
-        //        return "Vote deleted Successfullly";
-
-        //    }
-        //    else
-        //    {
-        //        return "No Vote found";
-        //    }
-
-
-        //}
+       
 
 
 
