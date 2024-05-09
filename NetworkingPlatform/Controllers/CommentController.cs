@@ -76,11 +76,23 @@ namespace NetworkingPlatform.Controllers
             try
             {
                 var comment = _context.PostComments.FirstOrDefault(c=>c.ID == id);
-                if(comment == null)
+                if (comment == null)
                 {
                     return NotFound();
                 }
+                var commentHistory = new CommentHistory
+
+                {
+                    Content = comment.Content,
+                    users_id = comment.users_id,
+                    comment_id = comment.ID,
+                    Date = comment.Date,
+                   
+                };
+
+                _context.CommentHistory.Add(commentHistory);
                 comment.Content = content;
+                comment.Date = DateTime.Now;
                 _context.SaveChanges();
                 return Ok(comment);
 

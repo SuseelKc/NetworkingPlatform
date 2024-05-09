@@ -18,5 +18,10 @@ namespace NetworkingPlatform.Data
         public DbSet<Reply> Reply { get; set; }
         public DbSet<ReplyVotes> ReplyVote { get; set; }
         public DbSet<CommentVotes> CommentVotes { get; set; }
+
+        public DbSet<PostHistory> PostHistory { get; set; }
+
+        public DbSet<CommentHistory> CommentHistory { get; set; }
+
     }
 }
