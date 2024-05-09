@@ -34,15 +34,15 @@ namespace NetworkingPlatform.Controllers
                 }
                 User.PasswordHash = HashPassword(User.PasswordHash);
 
-                User.NormalizedEmail = User.Email.ToUpper(); 
-                User.NormalizedUserName= User.Email.ToUpper();
+                User.NormalizedEmail = User.Email.ToUpper();
+                User.NormalizedUserName = User.Email.ToUpper();
                 _context.Users.Add(User);
                 _context.SaveChanges();
                 return Ok(User);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -85,9 +85,9 @@ namespace NetworkingPlatform.Controllers
                     foreach (var post in posts)
                     {
                         // Calculate popularity score for each post and add to total popularity score
-                        popularityScore += (2*(_context.Votes.Count(v => v.post_id == post.ID && v.voteType == 1))) // Likes
-                                            + (-1*(_context.Votes.Count(v => v.post_id == post.ID && v.voteType == 0))) // Unlikes
-                                            + (1* (_context.PostComments.Count(c => c.post_id == post.ID))); // Comments
+                        popularityScore += (2 * (_context.Votes.Count(v => v.post_id == post.ID && v.voteType == 1))) // Likes
+                                            + (-1 * (_context.Votes.Count(v => v.post_id == post.ID && v.voteType == 0))) // Unlikes
+                                            + (1 * (_context.PostComments.Count(c => c.post_id == post.ID))); // Comments
                     }
 
                     var userWithPopularity = new
@@ -97,7 +97,7 @@ namespace NetworkingPlatform.Controllers
                         email = user.Email,
                         role = user.UserRole,
                         image = user.Image,
-                        posts = _context.Posts.Count(c=> c.users_id==user.Id),
+                        posts = _context.Posts.Count(c => c.users_id == user.Id),
                         popularity = popularityScore
                     };
 
@@ -120,9 +120,10 @@ namespace NetworkingPlatform.Controllers
         {
             try
             {
-               var user = await _context.Users.FirstAsync(u=>u.Id==id);
+                var user = await _context.Users.FirstAsync(u => u.Id == id);
                 return Ok(user);
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -135,7 +136,7 @@ namespace NetworkingPlatform.Controllers
             try
             {
                 var posts = await _context.Posts
-                   .Where(p => p.users_id == id)
+                   .Where(p => p.users_id == id && p.isDeleted == false)
                    .Select(post => new
                    {
                        post.ID,
@@ -147,22 +148,62 @@ namespace NetworkingPlatform.Controllers
                        post.users_id,
                        LikeCount = _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 1), // Count of likes
                        UnlikeCount = _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 0), // Count of unlikes
-                       commentCount = _context.PostComments.Count(p=> p.post_id== post.ID)
+                       commentCount = _context.PostComments.Count(p => p.post_id == post.ID)
                    })
                    .ToListAsync();
                 return Ok(posts);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
 
-        // for log in 
+        [HttpPatch]
+        [Route("user/{id}")]
+        public async Task<IActionResult> UpdateUser(string id, string type, string content)
+        {
+            try
+            {
+                var user = await _context.Users.FirstAsync(u => u.Id == id);
+                if (user == null)
+                {
+                    return NotFound("No user found");
+                }
+                if (type == "image")
+                {
+                    user.Image = content;
+                }
+                await _context.SaveChangesAsync();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
+        [HttpDelete]
+        [Route("user/admin/{id}")]
+        public async Task<IActionResult> DeleteUserByAdmin(string id)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+                if (user == null)
+                {
+                    return NotFound("No user found");
+                }
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                return Ok("User deleted successfully");
+            } catch (Exception ex)
+            {
+                return StatusCode(500,ex.Message);
+            }
 
-
-        //
+        }
 
 
 

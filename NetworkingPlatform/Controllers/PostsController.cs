@@ -49,7 +49,7 @@ namespace NetworkingPlatform.Controllers
         {
             try
             {
-                var posts = _context.Posts.ToList();
+                var posts = _context.Posts.Where(p=> p.isDeleted==false).ToList();
                 if (posts == null || !posts.Any())
                 {
                     return Ok(posts); // Return 404 Not Found if no posts are found
@@ -155,14 +155,14 @@ namespace NetworkingPlatform.Controllers
                 List<Posts> posts;
                 if (category == "Popular")
                 {
-                    posts = _context.Posts.OrderByDescending(p => _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 1) -
+                    posts = _context.Posts.Where(p=> p.isDeleted==false).OrderByDescending(p => _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 1) -
                                       _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 0) +
                                       _context.PostComments.Count(c => c.post_id == p.ID))
                .ThenByDescending(p => p.Date)
                  .ToList();
                 }else if(category == "New")
                 {
-                    posts = _context.Posts.OrderByDescending(p => _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 1) -
+                    posts = _context.Posts.Where(p=> p.isDeleted==false).OrderByDescending(p => _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 1) -
                                      _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 0) +
                                      _context.PostComments.Count(c => c.post_id == p.ID))
               .ThenByDescending(p => p.Date)
@@ -172,7 +172,7 @@ namespace NetworkingPlatform.Controllers
                 else
                 {
                     posts = _context.Posts
-               .Where(p => p.Category.Equals(category))
+               .Where(p => p.Category.Equals(category) && p.isDeleted==false)
                .OrderByDescending(p => _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 1) -
                                       _context.Votes.Count(v => v.post_id == p.ID && v.voteType == 0) +
                                       _context.PostComments.Count(c => c.post_id == p.ID))
@@ -207,6 +207,35 @@ namespace NetworkingPlatform.Controllers
         [HttpDelete]
         [Route("post/{id}")]
         public async Task<IActionResult> deletePost(int id)
+        {
+            try
+            {
+
+                var post = await _context.Posts.Where(x => x.ID == id).FirstOrDefaultAsync();
+                if (post != null)
+                {
+                    post.isDeleted = true;
+                    _context.SaveChanges();
+                    return StatusCode(200, "Post deleted successfully");
+
+                }
+                else
+                {
+                    return StatusCode(400, "No post found");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle other exceptions
+                return StatusCode(500, "An error occurred while updating the post. Please try again later.");
+            }
+
+
+        }
+
+        [HttpDelete]
+        [Route("post/admin/{id}")]
+        public async Task<IActionResult> deletePostByAdmin(int id)
         {
             try
             {
@@ -269,6 +298,7 @@ namespace NetworkingPlatform.Controllers
                        post.Description,
                        post.Category,
                        post.Date,
+                       post.isDeleted,
                        post.users_id,
                        user = _context.Users.FirstOrDefault(u=> u.Id==post.users_id).UserName,
                        LikeCount = _context.Votes.Count(v => v.post_id == post.ID && v.voteType == 1), // Count of likes
