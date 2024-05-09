@@ -250,5 +250,27 @@ namespace NetworkingPlatform.Controllers
             return result == PasswordVerificationResult.Success;
         }
 
+        [HttpPatch]
+        [Route("changeprofile/{id}")]
+        public async Task<IActionResult> ChangeProfile(string id, [FromBody] string img)
+        {
+            try { 
+                var user = await _context.Users.FirstOrDefaultAsync(u=> u.Id== id);
+                if(user == null)
+                {
+                    return NotFound();
+                }
+                user.Image = img;
+                await _context.SaveChangesAsync();
+                return Ok("Profile updated");
+
+            } catch(Exception ex)
+            {
+                return StatusCode(400, ex.Message);
+            }
+
+        }
+
+
     }
 }
