@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NetworkingPlatform.Configuration;
 using NetworkingPlatform.Data;
 using NetworkingPlatform.Hubs;
+using NetworkingPlatform.Interface;
 using NetworkingPlatform.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +33,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
+//email 
+builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration"));
+builder.Services.AddSingleton<IEmailService, EmailService>();
+//
 
 
 var app = builder.Build();
