@@ -17,7 +17,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpGet]
         [Route("dashboard/info")]
-        public async Task<IActionResult> getDashboardInfo()
+        public async Task<IActionResult> getDashboardInfo()  /// get the dashboard details such as counts and other metrics defiled below for admin
         {
             try
             {
@@ -53,7 +53,7 @@ namespace NetworkingPlatform.Controllers
 
         [HttpGet]
         [Route("dashboard/posts/")]
-        public async Task<IActionResult> GetPosts(int year, int month)
+        public async Task<IActionResult> GetPosts(int year, int month)//get posts filter by dates
         {
             try
             {

@@ -66,7 +66,7 @@ namespace NetworkingPlatform.Controllers
             return Ok(new { Token = token, User = userData });
         }
 
-        private string GenerateJwtToken(Users user)
+        private string GenerateJwtToken(Users user) //generate  JWT token
         {
             var key = Encoding.UTF8.GetBytes(_secretKey);
 
